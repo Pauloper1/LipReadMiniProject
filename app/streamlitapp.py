@@ -21,6 +21,10 @@ st.title('Lip reading using deep  Learning')
 options = os.listdir(os.path.join('..', 'data', 's1'))
 selected_video = st.selectbox('Choose video', options)
 
+# uploading a video
+
+file_uploaded = st.file_uploader(label="Upload your video here", type=['mp4','mpg'])
+
 # Generate two columns 
 col1, col2 = st.columns(2)
 
@@ -44,14 +48,14 @@ if options:
         imageio.mimsave('animation.gif', video, fps=10)
         st.image('animation.gif', width=400) 
 
-        st.info('This is the output of the deep learning model as tokens')
+        # st.info('This is the output of the deep learning model as tokens')
+        st.info('Predicted words')
         model = load_model()
         yhat = model.predict(tf.expand_dims(video, axis=0))
         decoder = tf.keras.backend.ctc_decode(yhat, [75], greedy=True)[0][0].numpy()
-        st.text(decoder)
+        # st.text(decoder)
 
         # Convert prediction to text
-        st.info('Decode the raw tokens into words')
         converted_prediction = tf.strings.reduce_join(num_to_char(decoder)).numpy().decode('utf-8')
         st.text(converted_prediction)
         
